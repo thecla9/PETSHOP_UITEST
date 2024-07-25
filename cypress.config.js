@@ -9,10 +9,11 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       // Implement node event listeners here
     },
+    baseUrl: 'https://pet-shop.buckhill.com.hr/',
     specPattern: 'cypress/e2e/**/*.spec.js',
   },
   env: {
     USER_API_TOKEN: process.env.USER_API_TOKEN,
-    ADMIN_API_TOKEN: process.env.ADMIN_API_TOKEN,
-  },
+    ADMIN_API_TOKEN: process.env.ADMIN_API_TOKEN
+  }
 });

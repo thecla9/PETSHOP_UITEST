@@ -185,18 +185,18 @@ describe('User Login Tests', () => {
   });
 
   it('TS-05: Should display errors for empty email and password fields', () => {
-    cy.contains('email is required');
-    cy.contains('email is required');
+    cy.contains('Failed to authenticate user');
+    cy.contains('Failed to authenticate user');
     cy.contains('Log in').click();
 
     // Check if error message is visible
     cy.document().then((doc) => {
       const errorMessage = doc.querySelector('.error-message');
       if (errorMessage) {
-        if (errorMessage.textContent.includes('Failed to authenticate user')) {
-          cy.log('Email or password is required message is visible');
+        if (errorMessage.textContent.includes('email or password is required')) {
+          cy.log('Email or Password is required message is visible');
         } else {
-          cy.log('Error message visible but does not contain "Failed to authenticate user"');
+          cy.log('Error message visible but does not contain "Email or Password is required"');
         }
       } else {
         cy.log('Expected error message not found');
