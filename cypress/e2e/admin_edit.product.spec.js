@@ -1,9 +1,14 @@
-describe('Admin Product Management', () => {
+describe('Admin Product Management - Edit Product', () => {
     const baseUrl = 'https://pet-shop.buckhill.com.hr/login'; // Admin login URL
     const adminEmail = 'admin@buckhill.co.uk';
     const adminPassword = 'admin';
     const updatedProductName = 'Updated Product Name'; // New product name for editing
-    const existingProductName = 'Product to be Edited'; // Product name to be edited
+    const updatedProductPrice = '99.99'; // New product price for editing
+    const updatedProductDescription = 'Updated Product Description'; // New product description for editing
+    const productsToEdit = [
+        'Purina Tidy Cats Clumping Cat Litter',
+        'Precious Cat Unscented Ultra Clumping Cat Litter'
+    ]; // Products to be edited
 
     before(() => {
         // Handle uncaught exceptions to prevent test failures
@@ -25,42 +30,59 @@ describe('Admin Product Management', () => {
         cy.url().should('include', '/dashboard'); // Replace with your dashboard URL or a specific element present after login
     });
 
-    it('should edit an existing product successfully', () => {
-        // Navigate to the Products page
-        cy.visit('/dashboard/products');
+    beforeEach(() => {
+        // Ensure successful redirection to the dashboard
+        cy.visit(baseUrl);
+        cy.get('#input-0').type(adminEmail);
+        cy.get('#input-2').type(adminPassword);
+        cy.contains('Log in').click();
+        cy.url({ timeout: 10000 }).should('include', '/dashboard');
 
-        // Assert the page contains the list of products
-        cy.get('products').should('exist'); // Replace with the actual container selector
+        // Navigate to Products page
+        cy.get('#__nuxt > div > div > div > nav > div > div > div:nth-child(4) > div > a > div > div.v-list-item__content > div').click();
+        cy.url().should('include', '/dashboard/products');
+    });
 
-        // Assert the existing product is present in the list
-        cy.contains(existingProductName).should('exist');
+    productsToEdit.forEach(productName => {
+        it(`should edit the product "${productName}" successfully`, () => {
+            // Ensure products are loaded
+            cy.wait(5000); // Adjust wait time if necessary
 
-        // Click on the action button (three dots icon) for the product to be edited
-        cy.get('table > tbody > tr')
-            .contains(existingProductName)
-            .parent('tr')
-            .find('td:nth-child(6) > div > span')
-            .click();
+            // Ensure the table is loaded and visible
+            cy.get('#__nuxt > div > div > div > main > div > div > div:nth-child(2) > div > div > div.v-table.v-theme--PetGreen.v-table--density-default.c-table.products__table > div')
+                .should('be.visible')
+                .within(() => {
+                    // Assert the product is present in the list
+                    cy.contains(productName).should('exist');
 
-        // Click on the Edit option
-        cy.get('table > tbody > tr')
-            .contains(existingProductName)
-            .parent('tr')
-            .find('td:nth-child(6) > div > span:nth-child(1) > i')
-            .click();
+                    // Click on the action button (three dots icon) for the product to be edited
+                    cy.contains(productName)
+                        .parent('tr')
+                        .find('td:nth-child(6) > div > span > i')
+                        .click();
 
-        // Perform the edit by clearing the existing product name and typing the updated name
-        cy.get('#product-name').clear().type(updatedProductName);
+                    // Click on the Edit option
+                    cy.contains(productName)
+                        .parent('tr')
+                        .find('td:nth-child(6) > div > span:nth-child(1)')
+                        .click();
+                });
 
-        // Save the updated product
-        cy.contains('Save').click();
+            // Edit Product Details using alternative selectors
+            cy.get('input[aria-describedby="input-53-messages"]').clear().type(updatedProductName); // Product name input
+            cy.get('input[aria-describedby="input-59-messages"]').clear().type(updatedProductPrice); // Product price input
+            cy.get('textarea[aria-describedby="input-62-messages"]').clear().type(updatedProductDescription); // Product description textarea
 
-        // Assert the updated product details are correctly saved
-        cy.contains(updatedProductName).should('exist');
-        
-        // Additional verification to ensure the product is updated correctly
-        cy.get('table > tbody > tr')
-            .contains(updatedProductName)
-            .should('exist');
+            // Save the updated product
+            cy.get('button:contains(Save)').click(); // Adjust selector if needed
+
+            // Assert the updated product details are correctly saved
+            cy.contains(updatedProductName).should('exist');
+            
+            // Additional verification to ensure the product is updated correctly
+            cy.get('table > tbody > tr')
+                .contains(updatedProductName)
+                .should('exist');
+        });
     });
 });
