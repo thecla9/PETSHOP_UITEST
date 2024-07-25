@@ -2,7 +2,7 @@ describe('Admin Add Customer Automation', () => {
     const adminEmail = 'admin@buckhill.co.uk';
     const adminPassword = 'admin';
     const loginUrl = 'https://pet-shop.buckhill.com.hr/login';
-    const addCustomerUrl = 'https://pet-shop.buckhill.com.hr/dashboard';
+    const customersUrl = 'https://pet-shop.buckhill.com.hr/dashboard/customers';
 
     function generateRandomString(length) {
         let result = '';
@@ -28,29 +28,32 @@ describe('Admin Add Customer Automation', () => {
         cy.get('#input-0').type(adminEmail);
         cy.get('#input-2').type(adminPassword);
         cy.contains('Log in').click();
-        cy.url({ timeout: 10000 }).should('include', 'https://pet-shop.buckhill.com.hr/dashboard');
+        cy.url({ timeout: 10000 }).should('include', '/dashboard');
+
+        // Click on the specified element to navigate to the customers page
+        cy.get('#__nuxt > div > div > div > nav > div > div > div:nth-child(3) > div > a > div > div.v-list-item__content > div').click();
+
+        // Ensure the current URL is the customers page
+        cy.url({ timeout: 10000 }).should('include', customersUrl);
     });
 
-    it('should navigate to and add a new customer successfully', () => {
+    it('should navigate to the customers page and add a new customer successfully', () => {
         const firstName = generateRandomString(5);
         const lastName = generateRandomString(5);
         const email = generateRandomEmail();
         const phone = generateRandomPhoneNumber();
 
-        cy.visit('https://pet-shop.buckhill.com.hr'); // Navigate to dashboard
+        // Ensure the current URL is the customers page
+        cy.url({ timeout: 10000 }).should('include', '/dashboard/customers');
 
-        // Ensure we are on the dashboard page
-        cy.url({ timeout: 10000 }).should('include', '/dashboard');
-
-        // Click the "Add Customer" button using the updated selector
-        cy.get('#__nuxt > div > div > div > main > div > div > div:nth-child(2) > div > div > div.table-header > div.table-header__main > div.table-header__content > button > span.v-btn__content > i')
-            .click();
+        // Click the "Add New Customer" button using the new selector
+        cy.get('#__nuxt > div > div > div > main > div > div > div:nth-child(2) > div > div > div.table-header > div.table-header__main > div.table-header__content > button > span.v-btn__content').click();
 
         // Wait for the navigation or loading to complete
         cy.wait(2000); // Adjust the wait time as needed
 
         // Ensure navigation to the add customer page
-        cy.url({ timeout: 10000 }).should('include', '/dashboard');
+        cy.url({ timeout: 10000 }).should('include', '/dashboard/customers/add');
 
         // Fill in the customer details
         cy.get('#input-101').type(firstName);
@@ -60,7 +63,7 @@ describe('Admin Add Customer Automation', () => {
         cy.get('#input-109').type('123 Main St, Anytown, USA');
         cy.get('#input-111').type('password123');
         cy.get('#input-113').type('password123');
-        cy.get('body > div.v-overlay-container > div > div.v-overlay__content > div > div > div > div > div:nth-child(9) > button').click();
+        cy.get('button:contains("Save")').click();
 
         // Assert success message
         cy.contains('Customer added successfully').should('be.visible');
