@@ -23,6 +23,10 @@ describe('Admin Add Customer Automation', () => {
         return '1234567890'; // You can also randomize the phone number if needed
     }
 
+    function generateRandomLocation() {
+        return 'Random Location'; // Adjust this as needed
+    }
+
     before(() => {
         cy.visit(loginUrl);
         cy.get('#input-0').type(adminEmail);
@@ -30,8 +34,8 @@ describe('Admin Add Customer Automation', () => {
         cy.contains('Log in').click();
         cy.url({ timeout: 10000 }).should('include', '/dashboard');
 
-        // Click on the specified element to navigate to the customers page
-        cy.get('#__nuxt > div > div > div > nav > div > div > div:nth-child(3) > div > a > div > div.v-list-item__content > div').click();
+        // Click on the customers page navigation item
+        cy.contains('Customers').click();
 
         // Ensure the current URL is the customers page
         cy.url({ timeout: 10000 }).should('include', customersUrl);
@@ -42,30 +46,29 @@ describe('Admin Add Customer Automation', () => {
         const lastName = generateRandomString(5);
         const email = generateRandomEmail();
         const phone = generateRandomPhoneNumber();
+        const location = generateRandomLocation();
+        const password = 'password123'; // Define the password here
+        const confirmPassword = password;
 
-        // Ensure the current URL is the customers page
-        cy.url({ timeout: 10000 }).should('include', '/dashboard/customers');
+            // Click the "Add New Customer" button using the specified selector
+            cy.get('#__nuxt > div > div > div > main > div > div > div:nth-child(2) > div > div > div.table-header > div.table-header__main > div.table-header__content > button > span.v-btn__content').click()
 
-        // Click the "Add New Customer" button using the new selector
-        cy.get('#__nuxt > div > div > div > main > div > div > div:nth-child(2) > div > div > div.table-header > div.table-header__main > div.table-header__content > button > span.v-btn__content').click();
+        // Fill out the form
+        cy.get('input.v-field__input').eq(0).type(firstName, { force: true }); // Assuming the first input is for the first name
+        cy.get('input.v-field__input').eq(1).type(lastName, { force: true });  // Assuming the second input is for the last name
+        cy.get('input.v-field__input').eq(2).type(email, { force: true });     // Assuming the third input is for the email
+        cy.get('input.v-field__input').eq(3).type(phone, { force: true });  
+        cy.get('input.v-field__input').eq(3).type(location, { force: true });     
+        cy.get('input.v-field__input').eq(3).type(password, { force: true }); 
+        cy.get('input.v-field__input').eq(3).type(confirmPassword, { force: true });    
+        cy.get('div').contains('Add new customer').click(); // Adjust as needed
+        cy.get('body').then($body => {
+            console.log($body.html()); // Log HTML to inspect element attributes
+          });
 
-        // Wait for the navigation or loading to complete
-        cy.wait(2000); // Adjust the wait time as needed
 
-        // Ensure navigation to the add customer page
-        cy.url({ timeout: 10000 }).should('include', '/dashboard/customers/add');
-
-        // Fill in the customer details
-        cy.get('#input-101').type(firstName);
-        cy.get('#input-103').type(lastName);
-        cy.get('#input-105').type(email);
-        cy.get('#input-107').type(phone);
-        cy.get('#input-109').type('123 Main St, Anytown, USA');
-        cy.get('#input-111').type('password123');
-        cy.get('#input-113').type('password123');
-        cy.get('button:contains("Save")').click();
-
-        // Assert success message
-        cy.contains('Customer added successfully').should('be.visible');
+        // Verify the new customer is added successfully
+        cy.contains(firstName, { timeout: 20000 }).should('exist');
+        cy.contains(lastName, { timeout: 20000 }).should('exist');
     });
 });

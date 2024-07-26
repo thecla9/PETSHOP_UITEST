@@ -68,10 +68,18 @@ describe('Admin Product Management - Edit Product', () => {
                         .click();
                 });
 
-            // Edit Product Details using alternative selectors
-            cy.get('input[aria-describedby="input-53-messages"]').clear().type(updatedProductName); // Product name input
-            cy.get('input[aria-describedby="input-59-messages"]').clear().type(updatedProductPrice); // Product price input
-            cy.get('textarea[aria-describedby="input-62-messages"]').clear().type(updatedProductDescription); // Product description textarea
+            // Edit Product Details using updated selectors
+            cy.get('div.v-field--active').within(() => {
+                cy.get('label[for="input-53"] + input').clear().type(updatedProductName); // Product name input
+            });
+
+            cy.get('div.v-field--active').within(() => {
+                cy.get('label[for="input-59"] + input').clear().type(updatedProductPrice); // Product price input
+            });
+
+            cy.get('div.v-field--active').within(() => {
+                cy.get('label[for="input-62"] + textarea').clear().type(updatedProductDescription); // Product description textarea
+            });
 
             // Save the updated product
             cy.get('button:contains(Save)').click(); // Adjust selector if needed
