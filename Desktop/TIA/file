@@ -1,0 +1,52 @@
+<style>
+      body {
+        background-color: #fff;
+        color: #333;
+        font-family: Arial, Helvetica, sans-serif;
+        padding: 1em;
+        margin: 0;
+      }
+
+      h1 {
+        color: #ed87cb;
+        font-size: 2em;
+        font-family: Georgia, "Times New Roman", Times, serif;
+        border-bottom: 1px solid #375e97;
+        border-bottom-style: dotted;
+        border-bottom: thick purple;
+      }
+
+      h2 {
+        font-size: 1.5em;
+      }
+
+      .job-title {
+        color: #999999;
+        font-weight: bold;
+      }
+
+      a:link,
+      a:visited {
+        color: #fb6542;
+      }
+
+      a:hover {
+        text-decoration: none;
+      }
+    </style>
+
+    function solution(n) {
+      // Get the first digit by dividing by 10 and using Math.floor to round down
+      let firstDigit = Math.floor(n / 10);
+      
+      // Get the second digit using the modulus operator
+      let secondDigit = n % 10;
+      
+      // Return the sum of the two digits
+      return firstDigit + secondDigit;
+  }
+  
+  // Example usage:
+  console.log(solution(29)); // Output: 11
+  console.log(solution(11)); // Output: 2
+  

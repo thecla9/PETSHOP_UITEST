@@ -1,0 +1,26 @@
+html {
+    font-family: sans-serif;
+  }
+  
+  /* Your CSS below here */
+  div.large-box {
+ box-sizing: border-box;
+ border: 1px solid #010002;
+ width: 200px;
+ height: 150px;
+ margin:auto;
+ display:flex;
+ text-align: center;
+ justify-content: center;
+ align-items: center;
+ background-color: rgb(30, 0, 255);
+ font-size: 1.125rem; /* 17-18px: computed as 16px (default font size) * 1.125 = 18px */
+border-radius: 8px;
+color: #fff;
+margin-top: 100px;
+text-shadow: 1px 1px 2px rgb(3, 3, 3);
+box-shadow: 
+2px 4px 10px rgba(0, 0, 0, 0.2), /* Standard shadow for a raised effect */
+inset 2px 2px 5px rgba(255, 255, 255, 0.3), /* Inset white shadow near the top left */
+inset -2px -2px 5px rgba(0, 0, 0, 0.3); /* Inset black shadow near the bottom right */
+  }
